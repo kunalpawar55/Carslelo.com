@@ -1,71 +1,87 @@
-import axios from 'axios';
-import React, {  useState } from 'react';
-import { useParams } from 'react-router-dom';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function Makebid() {
+  const [showbidamout, setbidamout] = useState("");
+  const [showbidname, setbidname] = useState("");
+  const [showemail, setemail] = useState("");
 
-  const [showbidamout, setbidamout] = useState('');
-  const [showbidname, setbidname] = useState('');
-    const [showemail, setemail] = useState('');
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-   const {id}=useParams();
-
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setemail(user?.email);
+    setbidname(user?.name);
+  }, []);
 
   const makebid = () => {
     const biddata = {
       bidAmount: showbidamout,
       bidderName: showbidname,
-      email: showemail
+      email: showemail,
     };
 
-    axios.post(`http://localhost:8080/bids/add/${id}`, biddata)
+    axios
+      .post(`http://localhost:8080/bids/add/${id}`, biddata)
       .then(() => {
-        alert('Bid Placed Successfully!');
-        setbidamout('');
-        setbidname('');
+        alert("🚀 Bid placed successfully!");
+        navigate(`/car/${id}`);
       })
       .catch(() => {
-        alert('Bid Placement Failed. Please try again.');
+        alert("❌ Bid failed. Please try again.");
       });
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="flex flex-col gap-4 p-6 w-80
-        text-white text-center
-        border-2 border-red-300
-        bg-black rounded-lg">
+    <div className="min-h-screen bg-[#0B0B0B] flex items-center justify-center px-4">
 
-        <h1 className="text-xl font-semibold">Make Bid</h1>
+      <div
+        className="w-full max-w-md bg-gradient-to-br from-[#111] to-[#0B0B0B]
+                   border border-gray-800 rounded-2xl shadow-2xl p-8"
+      >
+        <h1 className="text-3xl font-bold text-center text-red-500 mb-2">
+          Place Your Bid
+        </h1>
+        <p className="text-center text-gray-400 text-sm mb-6">
+          Enter your best offer to compete for this car
+        </p>
 
-        <input
-          type="text"
-          placeholder="Enter your name"
-          value={showbidname}
-          onChange={(e) => setbidname(e.target.value)}
-          className="p-2 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
+        <div className="bg-[#121212] rounded-xl p-4 mb-5 text-left text-sm">
+          <p className="text-gray-300">
+            <span className="font-semibold text-white">Bidder:</span>{" "}
+            {showbidname}
+          </p>
+          <p className="text-gray-300 mt-1">
+            <span className="font-semibold text-white">Email:</span>{" "}
+            {showemail}
+          </p>
+        </div>
 
         <input
           type="number"
-          placeholder="Enter your bid amount"
+          placeholder="Enter bid amount (₹)"
           value={showbidamout}
           onChange={(e) => setbidamout(e.target.value)}
-          className="p-2 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={showemail}
-          onChange={(e) => setemail(e.target.value)}
-          className="p-2 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="w-full p-3 rounded-lg text-black text-lg
+                     focus:outline-none focus:ring-2 focus:ring-red-500"
         />
 
         <button
           onClick={makebid}
-          className="bg-red-600 hover:bg-red-700 transition p-2 rounded font-semibold"
+          className="mt-6 w-full bg-red-500 text-white py-3 rounded-xl
+                     text-lg font-semibold hover:bg-red-600
+                     transition-all duration-300"
         >
-          Make a Bid
+          Submit Bid 🚗
+        </button>
+
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-4 w-full text-gray-400 hover:text-white transition text-sm"
+        >
+          ← Back to Car Details
         </button>
       </div>
     </div>

@@ -8,6 +8,8 @@ import Makebid from './Component/Cars pages/Makebid';
 import AdminBidSection from './Component/Admin/AdminBidSection';
 import AddCar from './Component/Admin/AddCar';
 import Header from './Component/Header';
+import RegistrationUser from './Component/RegistrationUser';
+import Footer from './Component/Footer';
 
 
 function App() {
@@ -20,8 +22,9 @@ function App() {
         <Route path='/makebid/:id' element={<Makebid/>} />
         <Route path='/Admin' element={<AdminBidSection/>}/>
                 <Route path='/AddCars' element={<AddCar/>}/>
-
+<Route path='/registration' element={<RegistrationUser/>} />
     </Routes>
+    <Footer/>
     </>
 
   );
