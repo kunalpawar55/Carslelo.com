@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        input, select { margin: 5px 0; padding: 5px; width: 200px; }
+        button { padding: 5px 10px; }
+        .container { max-width: 500px; }
+        hr { margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Add Role</h2>
+    <input type="text" id="roleName" placeholder="Role Name">
+    <button onclick="addRole()">Add Role</button>
+    <hr>
+
+    <h2>Add Employee</h2>
+    <input type="text" id="empName" placeholder="Name"><br>
+    <input type="text" id="empPassword" placeholder="Password"><br>
+    <input type="number" id="empPhone" placeholder="Phone Number"><br>
+    <select id="roleSelect">
+        <option value="">Select Role</option>
+    </select><br>
+    <button onclick="addEmployee()">Add Employee</button>
+    <hr>
+
+    <h2>Employees List</h2>
+    <button onclick="getEmployees()">Show Employees</button>
+    <pre id="employees"></pre>
+</div>
+
+<script>
+    const baseUrl = 'http://localhost:8080';
+
+    // Load Roles into dropdown
+    function loadRoles() {
+        fetch(`${baseUrl}/employeeRole/all`)
+        .then(res => res.json())
+        .then(data => {
+            const roleSelect = document.getElementById('roleSelect');
+            roleSelect.innerHTML = '<option value="">Select Role</option>';
+            data.forEach(role => {
+                const opt = document.createElement('option');
+                opt.value = role.roleId;
+                opt.text = role.roleName;
+                roleSelect.appendChild(opt);
+            });
+        });
+    }
+
+    function addRole() {
+        const roleName = document.getElementById('roleName').value;
+        if(!roleName) { alert("Enter role name"); return; }
+        fetch(`${baseUrl}/employeeRole/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roleName })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert('Role Added: ' + JSON.stringify(data));
+            document.getElementById('roleName').value = '';
+            loadRoles(); // refresh dropdown
+        });
+    }
+
+    function addEmployee() {
+        const emp = {
+            name: document.getElementById('empName').value,
+            password: document.getElementById('empPassword').value,
+            phoneNumber: Number(document.getElementById('empPhone').value),
+            role: { roleId: Number(document.getElementById('roleSelect').value) }
+        };
+        if(!emp.name || !emp.password || !emp.phoneNumber || !emp.role.roleId){
+            alert("Fill all employee fields");
+            return;
+        }
+        fetch(`${baseUrl}/postdata`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(emp)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert('Employee Added: ' + JSON.stringify(data));
+            document.getElementById('empName').value = '';
+            document.getElementById('empPassword').value = '';
+            document.getElementById('empPhone').value = '';
+            document.getElementById('roleSelect').value = '';
+            getEmployees(); // refresh list
+        });
+    }
+
+    function getEmployees() {
+        fetch(`${baseUrl}/getdata`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('employees').textContent = JSON.stringify(data, null, 2);
+        });
+    }
+
+    // Initial load
+    loadRoles();
+    getEmployees();
+</script>
+</body>
+</html>

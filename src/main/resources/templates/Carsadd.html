@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Car</title>
+</head>
+<body>
+
+<h2>Add Car</h2>
+
+<form action="/cars" method="post" enctype="multipart/form-data">
+
+    Car Name:
+    <input type="text" name="carname"><br><br>
+
+    Model Name:
+    <input type="text" name="modelname"><br><br>
+
+    Car Number:
+    <input type="text" name="carnumber"><br><br>
+
+    Car Color:
+    <input type="text" name="carcolor"><br><br>
+
+    Location:
+    <input type="text" name="location"><br><br>
+
+    Description:
+    <textarea name="description"></textarea><br><br>
+
+    Gear Type:
+    <select name="geartype">
+        <option value="AUTOMATIC">AUTOMATIC</option>
+        <option value="MANUAL">MANUAL</option>
+    </select><br><br>
+
+    Fuel Type:
+    <select name="fueltype">
+        <option value="PETROL">PETROL</option>
+        <option value="DIESEL">DIESEL</option>
+        <option value="ELECTRIC">ELECTRIC</option>
+    </select><br><br>
+
+    Car Images:
+    <input type="file" name="images" multiple><br><br>
+
+    <button type="submit">Submit</button>
+
+</form>
+
+</body>
+</html>
